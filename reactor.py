@@ -377,9 +377,9 @@ def run():
             fourier = numpy.fft.fft(frame)
             vuval = mm.scale(vu.calc_avg(frame),(0,1),(0,1024))
             
-            fft = cu.fft(frame,length=20)
+            fft = cu.fft(frame,length=12)
             fft_deb = cu.fft(frame,length=40)
-            fftrun = [int(mm.scale(i,(0,1),(0,256))) for i in fft[0][0:10]]
+            fftrun = [int(mm.scale(i,(0,1),(0,256))) for i in fft[0][0:6]]
             fftrun_deb = [mm.scale(i,(0,1),(0,1024)) for i in fft_deb[0][0:20]]
             fftrunlimited = []
             for i in fftrun:
@@ -390,9 +390,10 @@ def run():
                 fftrunlimited += [i]
             dts['vumeter'] = [vuval]
             dts['fftchannel'] = fftrun_deb
-            vuch = cu.int2range(vuval,(0,1024),7,soft=True)
-            box[0] = fftrunlimited + vuch
-
+            vuch = cu.int2range(vuval,(0,1024),8,soft=True)
+            #box[0] = fftrunlimited + vuch
+            #box[0] = [ fftrunlimited[0], fftrunlimited[1], 0, fftrunlimited[2], fftrunlimited[3], fftrunlimited[4], fftrunlimited[5]]
+            box[0] = vuch[1:]
             # TODO: Add configuration file to replace hardcode
             d2s =  box[0]
             #d2s = , 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0]
@@ -405,6 +406,13 @@ def run():
             sys.stdout.write("GEN_INFO: Exiting run...\n")
 
 init()
+
+def allOn(i):
+	dmx.sendDMX([255]*i)
+
+def allOff(i):
+	dmx.sendDMX([0]*i)
+
 if not sys.flags.interactive:
     run()
 else:
