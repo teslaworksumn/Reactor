@@ -12,9 +12,6 @@ import time
 import numpy
 import serial
 import serial.tools.list_ports
-
-sys.path.append("plugins/enttec-usb-dmx-pro/")
-import Plugins.enttec_usb_dmx_pro.EnttecUsbDmxPro as DMX
 import pyaudio
 import Net.Server as Server
 import Utils.Audio as Audio
@@ -23,9 +20,11 @@ import Utils.ChannelUtils as ChannelUtils
 import VUMeter
 import SimpleBeatDetection as SimpleBeatDetection
 import Globals
+sys.path.append("plugins/enttec-usb-dmx-pro/")
+import Plugins.enttec_usb_dmx_pro.EnttecUsbDmxPro as EnttecUsbDmxPro
 
 
-dmx = DMX.EnttecUsbDmxPro()
+dmx = EnttecUsbDmxPro.EnttecUsbDmxPro()
 
 pya_device_index = -1
 pya_samplerate = 44100
@@ -48,7 +47,7 @@ for arg in sys.argv:
         sys.exit(0)
 
 mm = MyMath.MyMath()
-audio = Audio.Audio(device_index=pya_device_index,samplerate=pya_samplerate,channels=pya_channels,samples=pya_samples,gain=2)
+audio = Audio.Audio(device_index=pya_device_index, samplerate=pya_samplerate, channels=pya_channels, samples=pya_samples, gain=2)
 server = Server.Server()
 #server = Server(ip=socket.gethostname())
 if not dmx.getPort() == "":
@@ -80,12 +79,10 @@ def run():
         while True:
             frame = audio.getLastFrame()
             fourier = numpy.fft.fft(frame)
-            vuval = mm.scale(vu.calc_avg(frame),(0,1),(0,1024))
+            vuvalue = mm.scale(vu.calc_avg(frame),(0,1),(0,1024))
             
-            fft = cu.fft(frame,length=12)
-            fft_deb = cu.fft(frame,length=40)
-            fftrun = [int(mm.scale(i,(0,1),(0,256))) for i in fft[0][0:6]]
-            fftrun_deb = [mm.scale(i,(0,1),(0,1024)) for i in fft_deb[0][0:20]]
+            fft = cu.fft(frame,length=24)
+            fftrun = [int(mm.scale(i,(0,1),(0,256))) for i in fft[0][0:24]]
             fftrunlimited = []
             for i in fftrun:
                 if (i > 255):
@@ -93,12 +90,12 @@ def run():
                 elif (i < 0):
                     i = 0
                 fftrunlimited += [i]
-            Globals.dts['vumeter'] = [vuval]
-            Globals.dts['fftchannel'] = fftrun_deb
-            vuch = cu.int2range(vuval,(0,1024),8,soft=True)
+            Globals.dts['vumeter'] = [vuvalue]
+            Globals.dts['fftchannel'] = fftrunlimited
+            vuchannels = cu.int2range(vuvalue, (0,1024), 8, soft=True)
             #box[0] = fftrunlimited + vuch
             #box[0] = [ fftrunlimited[0], fftrunlimited[1], 0, fftrunlimited[2], fftrunlimited[3], fftrunlimited[4], fftrunlimited[5]]
-            box[0] = vuch[1:]
+            box[0] = vuchannels
             # TODO: Add configuration file to replace hardcode
             d2s =  box[0]
             #d2s = , 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0]

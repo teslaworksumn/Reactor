@@ -38,14 +38,14 @@ class ChannelUtils:
             # sample spacing
             T = 1.0 / samplerate
             fftbase = scipy.fftpack.fft(data)  # y
-            #fftaxis = numpy.linspace(0.0, 1.0 / (2.0 * T), N / 2)  # x
-            fftaxis = numpy.logspace(0.0, 1.0, N / 2) / (2.0 * T)  # x
+            fftaxis = numpy.linspace(0.0, 1.0 / (2.0 * T), N / 2)  # x
+            #fftaxis = numpy.logspace(0.0, 1.0, N / 2) / (2.0 * T)  # x
             fft = 2.0 / N * numpy.abs(fftbase[1:N/2])
             size = len(fft)
-            stepsize = int(size / length)
-            if length == None or stepsize < 1:
+            if length == None or size < length:
                 return (fft, fftaxis)
             fftfinal = []
+            stepsize = int(size / length)
             for i in range(0, size, stepsize):
                 fftfinal += [(math.sqrt(max(fft[i:i + stepsize]) * 100) * 10) / 100]
             return (fftfinal[:length], fftaxis)
