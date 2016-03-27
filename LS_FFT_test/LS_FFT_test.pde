@@ -45,9 +45,9 @@ void draw() {
       50, map(fftchannel[i],fftrange[0],fftrange[1], 0,100));
   }
   for (int i=fftcount/2; i<fftcount; i++) {
-    fill(0,(255-((float(i)/fftcount-0.5)*512)), ((float(i)/fftcount-0.5)*512));
-    rect((50*i)+(10*i)+10, 10+100-map(fftchannel[i],fftrange[0],fftrange[1], 0,100),
-      50, map(fftchannel[i],fftrange[0],fftrange[1], 0,100));
+   fill(0,(255-((float(i)/fftcount-0.5)*512)), ((float(i)/fftcount-0.5)*512));
+   rect((50*i)+(10*i)+10, 10+100-map(fftchannel[i],fftrange[0],fftrange[1], 0,100),
+     50, map(fftchannel[i],fftrange[0],fftrange[1], 0,100));
   }
   stroke(127);
   if (vumeter.length == 0) {

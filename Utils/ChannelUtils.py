@@ -1,8 +1,6 @@
 
-import math
 import Utils.MyMath as MyMath
 import numpy
-import scipy.fftpack
 
 
 class ChannelUtils:
@@ -30,30 +28,64 @@ class ChannelUtils:
                     c += [minmax[0]]
         return c
 
-    def fft(self, data, minmax=(0,255), length=None, samplerate=44100):
-        # Primarially based on http://stackoverflow.com/questions/25735153/plotting-a-fast-fourier-transform-in-python,
-        #  with the final data processing from http://julip.co/2012/05/arduino-python-soundlight-spectrum/
-        if not data[0] == -1:
-            N = len(data)
-            # sample spacing
-            T = 1.0 / samplerate
-            fftbase = scipy.fftpack.fft(data)  # y
-            fftaxis = numpy.linspace(0.0, 1.0 / (2.0 * T), N / 2)  # x
-            #fftaxis = numpy.logspace(0.0, 1.0, N / 2) / (2.0 * T)  # x
-            fft = 2.0 / N * numpy.abs(fftbase[1:N/2])
-            size = len(fft)
-            if length == None or size < length:
-                return (fft, fftaxis)
-            fftfinal = []
-            stepsize = int(size / length)
-            for i in range(0, size, stepsize):
-                fftfinal += [(math.sqrt(max(fft[i:i + stepsize]) * 100) * 10) / 100]
-            return (fftfinal[:length], fftaxis)
+    def vuintensitybuckets(self, vupct, numbuckets, log=False, maxval=255):
+        N = int(numbuckets)
+        # Give the vu meter a boost
+        vupct += 0.1
+
+        bucketized = numpy.array([0] * N, dtype=float)
+        if log:
+            steps = numpy.logspace(0, 1, N + 1, endpoint=True) / 10
         else:
-            if length == None:
-                return ([0], [0])
+            steps = numpy.linspace(0, 1, N + 1, endpoint=True)
+
+        # Fill buckets until not maxed out
+        i = 0
+        while i < N-1 and vupct > steps[i+1]:
+            bucketized[i] = maxval
+            i += 1
+        # Fractionally fill last bucket
+        remaining = vupct - steps[i]
+        bucketized[i] = maxval * min(1, remaining / (steps[1] - steps[0]))
+
+        return bucketized
+
+    def bucketize(self, data, numbuckets, log):
+        numbuckets = int(numbuckets)
+        length = len(data)
+        bucketized = numpy.array([0] * numbuckets, dtype=float)
+        if length < numbuckets:
+            for i in range(length):
+                bucketized[i] = data[i]
+        else:
+            if log:
+                steps = numpy.logspace(0, 1, numbuckets + 1, endpoint=True) / 10 * length
             else:
-                r = []
-                for i in range(0, length):
-                    r += [0]
-                return (r, [0])
+                steps = numpy.linspace(0, 1, numbuckets + 1, endpoint=True) * length
+            for i in range(numbuckets):
+                left = int(steps[i])
+                right = int(steps[i+1])
+                bucketized[i] = numpy.average(data[left:right])
+
+        return bucketized
+
+    def fft(self, data, length, log=False, N=1024, samplerate=44100):
+        # N is number of fft samples
+        # T is time per sample
+        T = 1.0 / samplerate
+        # Compute the fft
+        fft = numpy.fft.fft(data, n=N)
+        # Ignore the second half since it is the first half mirrored
+        # Also ignore the first bin, since it is unrelated info
+        if len(fft) % 2 == 0:
+            fft = numpy.split(fft, 2)[0]
+            fft = fft[1:]
+        else:
+            fft = fft[1:]
+            fft = numpy.split(fft, 2)[0]
+        # Find the magnitudes of the complex frequencies
+        fft = numpy.absolute(fft)
+        # Average out into buckets of frequencies
+        fft = self.bucketize(fft, length, log=log)
+        # Return the fft
+        return fft

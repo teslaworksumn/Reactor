@@ -22,14 +22,19 @@ import SimpleBeatDetection as SimpleBeatDetection
 import Globals
 sys.path.append("plugins/enttec-usb-dmx-pro/")
 import Plugins.enttec_usb_dmx_pro.EnttecUsbDmxPro as EnttecUsbDmxPro
-
+import Plugins.VixenLogPlugin as VixenLogPlugin
+import Utils.ConfigParser as ConfigParser
 
 dmx = EnttecUsbDmxPro.EnttecUsbDmxPro()
+vixenlog = VixenLogPlugin.VixenLogPlugin()
+
+config = ConfigParser.ConfigParser("configs/config.yaml")
 
 pya_device_index = -1
 pya_samplerate = 44100
 pya_channels = 1
 pya_samples = 2**11 # 2048
+pya_gain = config.gain
 
 for arg in sys.argv:
     if arg.startswith('dmx='):
@@ -47,7 +52,7 @@ for arg in sys.argv:
         sys.exit(0)
 
 mm = MyMath.MyMath()
-audio = Audio.Audio(device_index=pya_device_index, samplerate=pya_samplerate, channels=pya_channels, samples=pya_samples, gain=2)
+audio = Audio.Audio(device_index=pya_device_index, samplerate=pya_samplerate, channels=pya_channels, samples=pya_samples, gain=pya_gain)
 server = Server.Server()
 #server = Server(ip=socket.gethostname())
 if not dmx.getPort() == "":
@@ -67,39 +72,49 @@ def allstop():
 atexit.register(allstop)
 
 def run():
-    vu = VUMeter.VUMeter(7)
+    vu = VUMeter.VUMeter()
     cu = ChannelUtils.ChannelUtils();
-    bd = SimpleBeatDetection.SimpleBeatDetection(boolean=False)
-    range_low = audio.range[0]
-    range_high = audio.range[1]
-    Globals.dts['fftrange'] = (0,1024)
-    Globals.dts['vurange'] = (0,1024)
-    box = [ [],[],[],[],[],[] ]
+#    bd = SimpleBeatDetection.SimpleBeatDetection(boolean=False)
+#    range_low = audio.range[0]
+#    range_high = audio.range[1]
+    maxfft = 256
+    maxvu = 1024
+    Globals.dts['fftrange'] = (0,maxfft)
+    Globals.dts['vurange'] = (0,maxvu)
+    numfftchannels = config.numfftchannels
+    numvuchannels = config.numvuchannels
+    fftN = config.fftN
     try:
         while True:
             frame = audio.getLastFrame()
-            fourier = numpy.fft.fft(frame)
-            vuvalue = mm.scale(vu.calc_avg(frame),(0,1),(0,1024))
-            
-            fft = cu.fft(frame,length=24)
-            fftrun = [int(mm.scale(i,(0,1),(0,256))) for i in fft[0][0:24]]
-            fftrunlimited = []
-            for i in fftrun:
-                if (i > 255):
-                    i = 255
-                elif (i < 0):
-                    i = 0
-                fftrunlimited += [i]
-            Globals.dts['vumeter'] = [vuvalue]
-            Globals.dts['fftchannel'] = fftrunlimited
-            vuchannels = cu.int2range(vuvalue, (0,1024), 8, soft=True)
-            #box[0] = fftrunlimited + vuch
-            #box[0] = [ fftrunlimited[0], fftrunlimited[1], 0, fftrunlimited[2], fftrunlimited[3], fftrunlimited[4], fftrunlimited[5]]
-            box[0] = vuchannels
-            # TODO: Add configuration file to replace hardcode
-            d2s =  box[0]
-            #d2s = , 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0]
-            dmx.sendDMX(d2s)
+            if numfftchannels > 0:
+                fft = cu.fft(frame, numfftchannels, N=fftN, log=True, samplerate=44100)
+                fftrun = [int(mm.scale(x,(0,1),(0,maxfft))) for x in fft]
+                fftrun256 = []
+                for i in fftrun:
+                    if (i > 255):
+                        i = 255
+                    elif (i < 0):
+                        i = 0
+                    fftrun256 += [i]
+            else:
+                fftrun = [0]
+                fftrun256 = [0]
+
+            if numvuchannels > 0:
+                vuavg = vu.calc_avg(frame)
+                vuscaled = mm.scale(vuavg,(0,1),(0,maxvu))
+                vuchannelscaled = cu.int2range(vuscaled, (0,maxvu), 1, soft=True)
+                vuchannels = cu.vuintensitybuckets(vuavg, numvuchannels, log=True, maxval=255)[:numvuchannels]
+            else:
+                vuchannels = [0]
+                vuchannelscaled = [0]
+
+            datatosend = config.getdatatosend(fftrun256, vuchannels)
+            Globals.dts['vumeter'] = vuchannelscaled
+            Globals.dts['fftchannel'] = datatosend
+            dmx.sendDMX(datatosend)
+            vixenlog.send(datatosend)
             time.sleep(0.01)
     except (KeyboardInterrupt,SystemExit):
         pass
