@@ -1,0 +1,3 @@
+[submodule "Plugins/enttec_usb_dmx_pro"]
+	path = Plugins/enttec_usb_dmx_pro
+	url = https://github.com/teslaworksumn/enttec-usb-dmx-pro
