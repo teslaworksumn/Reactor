@@ -20,7 +20,6 @@ import Utils.ChannelUtils as ChannelUtils
 import VUMeter
 import SimpleBeatDetection as SimpleBeatDetection
 import Globals
-sys.path.append("plugins/enttec-usb-dmx-pro/")
 import Plugins.enttec_usb_dmx_pro.EnttecUsbDmxPro as EnttecUsbDmxPro
 import Plugins.VixenLogPlugin as VixenLogPlugin
 import Utils.ConfigParser as ConfigParser
