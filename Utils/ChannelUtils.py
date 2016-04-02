@@ -70,6 +70,7 @@ class ChannelUtils:
         return bucketized
 
     def fft(self, data, length, log=False, N=1024, samplerate=44100):
+        length = length * 2  # Because it looks cooler
         # N is number of fft samples
         # T is time per sample
         T = 1.0 / samplerate
@@ -88,4 +89,4 @@ class ChannelUtils:
         # Average out into buckets of frequencies
         fft = self.bucketize(fft, length, log=log)
         # Return the fft
-        return fft
+        return fft[:len(fft)//2] # See first comment
