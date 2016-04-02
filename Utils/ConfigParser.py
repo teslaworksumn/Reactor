@@ -19,10 +19,10 @@ class ConfigParser:
         for i in range(self.numchannels):
             dtype = self._channeltypes[i]
             if dtype == 'fft':
-                datatosend[i] = fftdata[fftidx]
+                datatosend[i] = int(fftdata[fftidx])
                 fftidx = (fftidx + 1) % len(fftdata)
             elif dtype == 'vu':
-                datatosend[i] = vudata[vuidx]
+                datatosend[i] = int(vudata[vuidx])
                 vuidx = (vuidx + 1) % len(vudata)
         return datatosend
 
