@@ -97,7 +97,6 @@ def run():
                         i = 0
                     fftrun256 += [i]
             else:
-                fftrun = [0]
                 fftrun256 = [0]
 
             if numvuchannels > 0:

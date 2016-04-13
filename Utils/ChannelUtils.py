@@ -56,7 +56,7 @@ class ChannelUtils:
         bucketized = numpy.array([0] * numbuckets, dtype=float)
         if length < numbuckets:
             for i in range(length):
-                bucketized[i] = data[i]
+                bucketized[i] = int(data[i])
         else:
             if log:
                 steps = numpy.logspace(0, 1, numbuckets + 1, endpoint=True) / 10 * length

@@ -1,25 +1,127 @@
-numchannels: 20
+numchannels: 120
+numfft: 96
+numvu: 8
 audiogain: 1
 fftN: 2048
 fftlog: Y
 vulog: Y
-0: vu
-1: vu
-2: vu
-3: vu
-4: fft
-5: fft
-6: fft
-7: fft
-8: fft
-9: fft
-10: fft
-11: fft
-12: fft
-13: fft
-14: fft
-15: fft
-16: fft
-17: fft
-18: fft
-19: fft
+0: fft 0
+1: fft 1
+2: fft 2
+3: fft 3
+4: fft 4
+5: fft 5
+6: fft 6
+7: fft 7
+8: fft 8
+9: fft 9
+10: fft 10
+11: fft 11
+12: fft 12
+13: fft 13
+14: fft 14
+15: fft 15
+16: fft 16
+17: fft 17
+18: fft 18
+19: fft 19
+20: fft 20
+21: fft 21
+22: fft 22
+23: fft 23
+24: fft 24
+25: fft 25
+26: fft 26
+27: fft 27
+28: fft 28
+29: fft 29
+30: fft 30
+31: fft 31
+32: fft 32
+33: fft 33
+34: fft 34
+35: fft 35
+36: fft 36
+37: fft 37
+38: fft 38
+39: fft 39
+40: fft 40
+41: fft 41
+42: fft 42
+43: fft 43
+44: fft 44
+45: fft 45
+46: fft 46
+47: fft 47
+48: fft 48
+49: fft 49
+50: fft 50
+51: fft 51
+52: fft 52
+53: fft 53
+54: fft 54
+55: fft 55
+56: fft 56
+57: fft 57
+58: fft 58
+59: fft 59
+60: fft 60
+61: fft 61
+62: fft 62
+63: fft 63
+64: fft 64
+65: fft 65
+66: fft 66
+67: fft 67
+68: fft 68
+69: fft 69
+70: fft 70
+71: fft 71
+72: fft 72
+73: fft 73
+74: fft 74
+75: fft 75
+76: fft 76
+77: fft 77
+78: fft 78
+79: fft 79
+80: fft 80
+81: fft 81
+82: fft 82
+83: fft 83
+84: fft 84
+85: fft 85
+86: fft 86
+87: fft 87
+88: fft 88
+89: fft 89
+90: fft 90
+91: fft 91
+92: fft 92
+93: fft 93
+94: fft 94
+95: fft 95
+96: vu 0
+97: vu 1
+98: vu 2
+99: vu 3
+100: vu 4
+101: vu 5
+102: vu 6
+103: vu 7
+104: none -1
+105: none -1
+106: none -1
+107: none -1
+108: none -1
+109: none -1
+110: none -1
+111: none -1
+112: vu 7
+113: vu 6
+114: vu 5
+115: vu 4
+116: vu 3
+117: vu 2
+118: vu 1
+119: vu 0

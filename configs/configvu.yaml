@@ -1,25 +1,24 @@
-numchannels: 20
+numchannels: 17
+numfft: 0
+numvu: 16
 audiogain: 1
 fftN: 2048
-fftlog: N
+fftlog: Y
 vulog: Y
-0: vu
-1: vu
-2: vu
-3: vu
-4: vu
-5: vu
-6: vu
-7: vu
-8: vu
-9: vu
-10: vu
-11: vu
-12: vu
-13: vu
-14: vu
-15: vu
-16: vu
-17: vu
-18: vu
-19: vu
+0: vu 0
+1: vu 1
+2: vu 2
+3: vu 3
+4: vu 4
+5: vu 5
+6: vu 6
+7: vu 7
+8: none -1
+9: vu 7
+10: vu 6
+11: vu 5
+12: vu 4
+13: vu 3
+14: vu 2
+15: vu 1
+16: vu 0
