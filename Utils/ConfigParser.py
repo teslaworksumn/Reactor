@@ -5,7 +5,8 @@ class ConfigParser:
         self.numchannels = 0
         self.numfftchannels = 0
         self.numvuchannels = 0
-        self.gain = 1
+        self.gain_fft = 1
+        self.gain_vu = 1
         self.fftN = 1024
         self._channeldata = []
         self.fftlog = False
@@ -49,26 +50,29 @@ class ConfigParser:
         if 'numchannels' not in keys or \
             'numfft' not in keys or \
             'numvu' not in keys or \
-            'audiogain' not in keys or \
+            'fftgain' not in keys or \
+            'vugain' not in keys or \
             'fftN' not in keys:
 
-            print("Missing 'numchannels', 'numfft', 'numvu', 'fftN', or 'audiogain' key")
+            print("Missing 'numchannels', 'numfft', 'numvu', 'fftN', 'fftgain', or 'vugain' key")
             return False
 
         channels = config['numchannels']
         count_fft = config['numfft']
         count_vu = config['numvu']
-        audiogain = config['audiogain']
+        fftgain = config['fftgain']
+        vugain = config['vugain']
         N = config['fftN']
 
         try:
             self.numchannels = int(channels)
             self.numfftchannels = int(count_fft)
             self.numvuchannels = int(count_vu)
-            self.gain = float(audiogain)
+            self.gain_fft = float(fftgain)
+            self.gain_vu = float(vugain)
             self.fftN = int(N)
         except TypeError:
-            print("numchannels or fftN is not an integer, or audiogain is not a float")
+            print("Error converting types in ConfigParser")
             return False
 
         # Check for booleans

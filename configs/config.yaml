@@ -1,8 +1,9 @@
 numchannels: 144
 numfft: 24
 numvu: 8
-audiogain: 0.3
-fftN: 2048
+fftgain: 0.1
+vugain: 1.1
+fftN: 1024
 fftlog: Y
 vulog: Y
 0: fft 0

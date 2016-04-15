@@ -33,7 +33,10 @@ pya_device_index = -1
 pya_samplerate = 44100
 pya_channels = 1
 pya_samples = 2**11 # 2048
-pya_gain = config.gain
+
+fft_gain = config.gain_fft
+vu_gain = config.gain_vu
+pya_gain = vu_gain
 
 for arg in sys.argv:
     if arg.startswith('dmx='):
@@ -85,9 +88,10 @@ def run():
     fftN = config.fftN
     try:
         while True:
-            frame = audio.getLastFrame()
+            vu_frame = audio.getLastFrame()
+            fft_frame = [x*fft_gain/vu_gain for x in vu_frame]
             if numfftchannels > 0:
-                fft = cu.fft(frame, numfftchannels, N=fftN, log=True, samplerate=44100)
+                fft = cu.fft(fft_frame, numfftchannels, N=fftN, log=True, samplerate=44100)
                 fftrun = [int(mm.scale(x,(0,1),(0,maxfft))) for x in fft]
                 fftrun256 = []
                 for i in fftrun:
@@ -100,7 +104,7 @@ def run():
                 fftrun256 = [0]
 
             if numvuchannels > 0:
-                vuavg = vu.calc_avg(frame)
+                vuavg = vu.calc_avg(vu_frame)
                 vuscaled = mm.scale(vuavg,(0,1),(0,maxvu))
                 vuchannelscaled = cu.int2range(vuscaled, (0,maxvu), 1, soft=True)
                 vuchannels = cu.vuintensitybuckets(vuavg, numvuchannels, log=True, maxval=255)[:numvuchannels]
