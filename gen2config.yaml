@@ -1,0 +1,71 @@
+numchannels: 120
+numfft: 0
+numvu: 144
+audiogain: 0.7
+fftN: 2048
+fftlog: Y
+vulog: Y
+0: vu 0
+1: vu 0
+2: vu 0
+3: vu 0
+4: vu 1
+5: vu 1
+6: vu 1
+7: vu 1
+8: vu 2
+9: vu 2
+10: vu 2
+11: vu 2
+12: vu 3
+13: vu 3
+14: vu 3
+15: vu 3
+16: vu 4
+17: vu 4
+18: vu 4
+19: vu 4
+20: vu 5
+21: vu 5
+22: vu 5
+23: vu 5
+24: vu 6
+25: vu 6
+26: vu 6
+27: vu 6
+28: vu 7
+29: vu 7
+30: vu 7
+31: vu 7
+32: vu 7
+33: vu 7
+34: vu 7
+35: vu 7
+36: vu 6
+37: vu 6
+38: vu 6
+39: vu 6
+40: vu 5
+41: vu 5
+42: vu 5
+43: vu 5
+44: vu 4
+45: vu 4
+46: vu 4
+47: vu 4
+48: vu 3
+49: vu 3
+50: vu 3
+51: vu 3
+52: vu 2
+53: vu 2
+54: vu 2
+55: vu 2
+56: vu 1
+57: vu 1
+58: vu 1
+59: vu 1
+60: vu 0
+61: vu 0
+62: vu 0
+63: vu 0

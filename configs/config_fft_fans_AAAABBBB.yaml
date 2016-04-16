@@ -1,8 +1,8 @@
 numchannels: 144
 numfft: 24
-numvu: 4
-fftgain: 0.13
-vugain: 1.25
+numvu: 8
+fftgain: 0.5
+vugain: 1.1
 fftN: 1024
 fftlog: Y
 vulog: Y
@@ -103,28 +103,28 @@ vulog: Y
 94: fft 23
 95: fft 23
 96: none -2
-97: vu 2
-98: vu 1
-99: vu 1
-100: vu 3
+97: vu 4
+98: vu 3
+99: vu 2
+100: vu 7
 101: none -2
 102: none -2
-103: vu 2
-104: vu 0
+103: vu 5
+104: vu 1
 105: vu 0
-106: vu 3
+106: vu 6
 107: none -1
 108: none -1
 109: none -1
 110: none -1
 111: none -1
-112: vu 3
-113: vu 3
-114: vu 2
-115: vu 2
-116: vu 1
-117: vu 1
-118: vu 0
+112: vu 7
+113: vu 6
+114: vu 5
+115: vu 4
+116: vu 3
+117: vu 2
+118: vu 1
 119: vu 0
 120: none -1
 121: none -1

@@ -80,7 +80,7 @@ def run():
 #    range_low = audio.range[0]
 #    range_high = audio.range[1]
     maxfft = 256
-    maxvu = 256
+    maxvu = 255
     Globals.dts['fftrange'] = (0,maxfft)
     Globals.dts['vurange'] = (0,maxvu)
     numfftchannels = config.numfftchannels
