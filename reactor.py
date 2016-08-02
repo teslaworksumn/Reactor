@@ -13,6 +13,7 @@ import numpy
 import serial
 import serial.tools.list_ports
 import pyaudio
+from docopt import docopt
 import Net.Server as Server
 import Utils.Audio as Audio
 import Utils.MyMath as MyMath
@@ -29,6 +30,22 @@ vixenlog = VixenLogPlugin.VixenLogPlugin()
 
 config = ConfigParser.ConfigParser("configs/config.yaml")
 
+help_message = """Reactor
+
+Usage:
+    reactor.py list_dmx
+    reactor.py list_audio
+    reactor.py --audio=<audio-idx> [--dmx=<dmx-path>]
+    reactor.py --version
+    reactor.py (-h | --help)
+
+Options:
+    --dmx=<dmx-path>    Path to the dmx block device
+    --audio=<audio-idx> Index of used audio device, found with list_audio
+    --version           Show version
+    -h --help           Show this message
+"""
+
 pya_device_index = -1
 pya_samplerate = 44100
 pya_channels = 1
@@ -38,20 +55,22 @@ fft_gain = config.gain_fft
 vu_gain = config.gain_vu
 pya_gain = vu_gain
 
-for arg in sys.argv:
-    if arg.startswith('dmx='):
-        dmx.setPort(arg[4:])
-    if arg.startswith('list_dmx'):
-        serial.tools.list_ports.comports()
-    if arg.startswith('audio='):
-        pya_device_index = int(arg[6:])
-    if arg.startswith('list_audio'):
-        pya = pyaudio.PyAudio()
-        for i in range(0,pya.get_device_count()):
-            device = pya.get_device_info_by_index(i)
-            sys.stdout.write("{0}: {1}\n".format(i,device['name']))
-        pya.terminate()
-        sys.exit(0)
+arguments = docopt(help_message, version='Reactor 1.0')
+
+if arguments['list_dmx']:
+    serial.tools.list_ports.comports()
+    sys.exit(0)
+if arguments['list_audio']:
+    pya = pyaudio.PyAudio()
+    for i in range(0,pya.get_device_count()):
+        device = pya.get_device_info_by_index(i)
+        sys.stdout.write("{0}: {1}\n".format(i,device['name']))
+    pya.terminate()
+    sys.exit(0)
+if arguments['--dmx'] != None:
+    dmx.setPort(arguments['--dmx'])
+if arguments['--audio'] != None:
+    pya_device_index = int(arguments['--audio'])
 
 mm = MyMath.MyMath()
 audio = Audio.Audio(device_index=pya_device_index, samplerate=pya_samplerate, channels=pya_channels, samples=pya_samples, gain=pya_gain)
