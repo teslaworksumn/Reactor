@@ -52,6 +52,7 @@ class ChannelUtils:
 
     def bucketize(self, data, numbuckets, log):
         numbuckets = int(numbuckets)
+#        numbuckets *= 2
         length = len(data)
         bucketized = numpy.array([0] * numbuckets, dtype=float)
         if length < numbuckets:
@@ -68,6 +69,7 @@ class ChannelUtils:
                 bucketized[i] = numpy.average(data[left:right])
 
         return bucketized
+#       return bucketized[:len(bucketized) // 2]
 
     def fft(self, data, length, log=False, N=1024, samplerate=44100):
         length = length * 2  # Because it looks cooler
