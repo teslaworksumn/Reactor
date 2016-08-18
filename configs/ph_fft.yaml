@@ -1,0 +1,14 @@
+numchannels: 6
+numfft: 6
+numvu: 0
+fftgain: 0.13
+vugain: 0.5
+fftN: 1024
+fftlog: Y
+vulog: Y
+0: fft 0
+1: fft 1
+2: fft 2
+3: fft 3
+4: fft 4
+5: fft 5

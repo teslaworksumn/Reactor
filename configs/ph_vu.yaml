@@ -2,7 +2,7 @@ numchannels: 6
 numfft: 0
 numvu: 6
 fftgain: 0.13
-vugain: 1.0
+vugain: 0.5
 fftN: 1024
 fftlog: Y
 vulog: Y
